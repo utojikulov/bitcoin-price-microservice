@@ -19,4 +19,22 @@ export class RedisService {
             console.error('Redis error:', error);
         });
     }
+
+    async deleteValue(key: string) {
+        await this.redisClient.del(key);
+    }
+
+    async setValueToHash(key: string, hash: string, value: string) {
+        await this.redisClient.hset(key, hash, value);
+        this.redisClient.expire(key, 120 * 60);
+    }
+
+    async getValueFromHash(key: string, hash: string) {
+        const serializedValue = await this.redisClient.hget(key, hash);
+        if (serializedValue) {
+            return JSON.parse(serializedValue);
+        } else {
+            return null;
+        }
+    }
 }
