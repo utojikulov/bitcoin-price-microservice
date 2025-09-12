@@ -20,13 +20,9 @@ export class RedisService {
         });
     }
 
-    async deleteValue(key: string) {
-        await this.redisClient.del(key);
-    }
-
     async setValueToHash(key: string, hash: string, value: string) {
         await this.redisClient.hset(key, hash, value);
-        this.redisClient.expire(key, 120 * 60);
+        this.redisClient.expire(key, 60);
     }
 
     async getValueFromHash(key: string, hash: string) {
