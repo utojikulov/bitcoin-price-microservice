@@ -1,7 +1,7 @@
 import { BadGatewayException, Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
-import { RedisService } from 'src/redis/redis.service';
+import { RedisService } from '../redis/redis.service';
 
 export interface PriceData {
     bid: number

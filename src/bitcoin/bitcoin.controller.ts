@@ -1,6 +1,6 @@
 import { Controller, Get, NotFoundException } from '@nestjs/common';
 import { ApiResponse, ApiTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger';
-import { RedisService } from 'src/redis/redis.service';
+import { RedisService } from '../redis/redis.service';
 import { BitcoinService } from './bitcoin.service';
 
 @ApiTags('Bitcoin Price')
