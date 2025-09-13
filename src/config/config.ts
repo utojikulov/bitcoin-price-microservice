@@ -6,6 +6,8 @@ export default () => ({
         update_freq_ms: process.env.UPDATE_FREQUENCY_MS
     },
     cache: {
-        redis_password: process.env.REDIS_PASSWORD
+        redis_password: process.env.REDIS_PASSWORD,
+        redis_host: process.env.REDIS_HOST || 'localhost',
+        redis_port: parseInt(process.env.REDIS_PORT || '6379', 10),
     }
 })

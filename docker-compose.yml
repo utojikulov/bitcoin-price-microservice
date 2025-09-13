@@ -1,14 +1,10 @@
-version: '3.9'
-
 services:
   redis:
     image: redis:latest
     container_name: redis_bitcoin_price
     command: redis-server --requirepass ${REDIS_PASSWORD}
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
     ports:
-      - "6388:6379"
+      - 6379:6379
     volumes:
       - ./redisdata:/data
     deploy:
@@ -20,10 +16,37 @@ services:
           cpus: '0.25'
           memory: 256M
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 30s
       timeout: 10s
       retries: 5
     restart: unless-stopped
     tty: true
     stdin_open: true
+    networks:
+      - bitcoin-fee-price
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app_bitcoin_price
+
+    ports:
+      - ${PORT}:${PORT}
+    env_file:
+      - ./.env
+
+    depends_on:
+      redis:
+        condition: service_healthy
+
+    networks:
+      - bitcoin-fee-price
+
+volumes:
+  data:
+
+networks:
+  bitcoin-fee-price:
+    driver: bridge

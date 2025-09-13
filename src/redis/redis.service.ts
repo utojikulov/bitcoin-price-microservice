@@ -8,8 +8,9 @@ export class RedisService {
 
     constructor(private readonly configService: ConfigService) {
         this.redisClient = new Redis({
-            password: process.env.REDIS_PASSWORD,
-            port: 6388
+            password: this.configService.get<string>('cache.redis_password')!,
+            port: this.configService.get<number>('cache.redis_port')!,
+            host: this.configService.get<string>('cache.redis_host')!
         })
         this.redisClient.on('connect', () => {
             console.log('Connected to Redis');
