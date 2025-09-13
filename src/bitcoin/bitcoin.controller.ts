@@ -1,5 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, NotFoundException } from '@nestjs/common';
+import { ApiResponse, ApiTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger';
 import { RedisService } from 'src/redis/redis.service';
 import { BitcoinService } from './bitcoin.service';
 
@@ -10,12 +10,20 @@ export class BitcoinController {
 
     @Get('price')
     @ApiOperation({ summary: 'Get current Bitcoin price with commission applied' })
+    @ApiOkResponse({
+        description: 'Successfully retrieved Bitcoin price data'
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'Price data not found in cache (service might be starting up)'
+    })
     async getPrice() {
-        return await this.redisService.getValueFromHash('btc:price', 'latest')
-    }
+        const priceData = await this.redisService.getValueFromHash('btc:price', 'latest')
 
-    @Get('test')
-    async test() {
-        return this.bitcoinService.getPriceData()
+        if (!priceData) {
+            throw new NotFoundException('Price data not available.')
+        }
+
+        return priceData
     }
 }
