@@ -1,9 +1,10 @@
-import { Controller, Get, NotFoundException, Query } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Post, Query } from '@nestjs/common';
 import { ApiResponse, ApiTags, ApiOperation, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { RedisService } from '../redis/redis.service';
 import { ConfigService } from '@nestjs/config';
 import { CryptoAssetDto } from './dto/crypto-asset.dto';
 import { CryptoAssetEntity } from './entities/crypto-asset.entity';
+import { CryptoAssetService } from './crypto-asset.service';
 
 @ApiTags('Crypto Asset')
 @Controller('crypto')
@@ -12,7 +13,8 @@ export class CryptoAssetController {
 
     constructor(
         private readonly redisService: RedisService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+        private readonly cryptoAssetService: CryptoAssetService
     ) {}
 
     @Get('price')
@@ -50,4 +52,25 @@ export class CryptoAssetController {
 
         return priceData
     }
+
+    @Post('start')
+    @ApiOperation({summary: 'Start updating the crypto asset price'})
+        @ApiResponse({
+        status: 201,
+        type: Boolean
+    })
+    start() {
+        return this.cryptoAssetService.start()
+    }
+
+    @Post('stop')
+    @ApiOperation({summary: 'Stop updating the crypto asset price.'})
+    @ApiResponse({
+        status: 201,
+        type: Boolean
+    })
+    stop() {
+        return this.cryptoAssetService.stop()
+    }
+
 }

@@ -17,6 +17,8 @@ export class CryptoAssetService implements OnModuleInit {
     private readonly updateInterval: number
     private readonly targetSymbol: string
 
+    private intervalId: NodeJS.Timeout | null = null
+
     constructor(
         private readonly configService: ConfigService,
         private readonly redisService: RedisService,
@@ -28,9 +30,30 @@ export class CryptoAssetService implements OnModuleInit {
     }
 
     onModuleInit() {
-        this.getPriceData()
-        setInterval(() => this.getPriceData(), this.updateInterval)
+        this.start()
     }
+
+    onModuleDestroy() {
+        this.stop()
+    }
+
+    start() {
+        if (this.intervalId) return true
+        this.getPriceData()
+        this.intervalId = setInterval(() => this.getPriceData(), this.updateInterval)
+        this.logger.log('Price updte interval started.')
+        return true
+
+    }
+
+    stop() {
+        if (!this.intervalId) return false
+        clearInterval(this.intervalId)
+        this.intervalId = null
+        this.logger.log('Price interval updating stopped')
+        return false
+    }
+
 
     async getPriceData() {
         try {
