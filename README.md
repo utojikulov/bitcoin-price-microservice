@@ -4,9 +4,9 @@
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/crypto/price` | GET: Get current Crypto price with commission applied |
-| GET | `/crypto/stop` | POST: Stop updating the price. |
-| GET | `/crypto/start` | POST: Start updating the price. |
+| GET | `/crypto/price` | Get current Crypto price with commission applied |
+| POST | `/crypto/stop` | Stop updating the price. |
+| POST | `/crypto/start` | Start updating the price. |
 | GET | `/api` | Swagger API documentation |
 
 ## Prerequisites
@@ -49,4 +49,4 @@
 5. **Access the application**
    - Get Crypto Price: http://localhost:3000/crypto/price (the prices are **logged** every **UPDATE_FREQUENCY_MS** seconds)
    - View the API Docs: http://localhost:3000/api
-   - You can get the price changes of any kind of crypto and the commission you wanna apply to it, by just changing the **TARGET_ASSET_BINANCE_SYMBOL** and **SERVICE_COMMISSION_RATE** in your .env file.
+   - You can get the price changes of any kind of crypto and the commission you wanna apply to it, by just changing the **TARGET_ASSET_BINANCE_SYMBOL**, **UPDATE_FREQUENCY_MS** and **SERVICE_COMMISSION_RATE** in your .env file.
