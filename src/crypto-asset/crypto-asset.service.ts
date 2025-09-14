@@ -92,4 +92,6 @@ export class CryptoAssetService implements OnModuleInit {
         }
     }
 
+    // add support to dynamically change the settings in runtime, so we don't have to restart for the new env to be applied
+
 }

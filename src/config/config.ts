@@ -11,3 +11,6 @@ export default () => ({
         redis_port: parseInt(process.env.REDIS_PORT || '6379', 10),
     }
 })
+
+    // !!! Add support to dynamically change the settings in runtime, so the user doesn't have to restart for the new env to be applied
+
