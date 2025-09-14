@@ -1,7 +1,9 @@
 import { Controller, Get, NotFoundException, Query } from '@nestjs/common';
-import { ApiResponse, ApiTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags, ApiOperation, ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { RedisService } from '../redis/redis.service';
 import { ConfigService } from '@nestjs/config';
+import { CryptoAssetDto } from './dto/crypto-asset.dto';
+import { CryptoAssetEntity } from './entities/crypto-asset.entity';
 
 @ApiTags('Crypto Asset')
 @Controller('crypto')
@@ -15,22 +17,37 @@ export class CryptoAssetController {
 
     @Get('price')
     @ApiOperation({ summary: 'Get current crypto asset price with commission applied' })
+    @ApiQuery({
+        name: 'symbol',
+        type: String,
+        required: true,
+        example: 'BTCUSDT'
+    })
     @ApiOkResponse({
-        description: 'Successfully retrieved price data'
+        description: 'Successfully retrieved price data',
+        type: CryptoAssetEntity,
+        schema: {
+            example: {
+                "bid": 116070.28,
+                "ask": 116093.51,
+                "midPrice": 116081.9,
+                "ts": 1757886385155
+            }
+        }
     })
     @ApiResponse({
         status: 404,
-        description: 'Price data not found in cache'
+        description: 'Price data not found in cache',
     })
-    async getPrice(@Query('symbol') symbol: string) {
+    async getPrice(@Query('symbol') symbol: string): Promise<CryptoAssetDto> {
         const targetSymbol = symbol || this.configService.get<string>('app.target_symbol')
         const priceData = await this.redisService.getValueFromHash(
-            `binance:${this.targetSymbol}:orderBookTicker`,
+            `binance:${targetSymbol}:orderBookTicker`,
             'latest'
         )
 
         if (!priceData) throw new NotFoundException('Price data not available.')
 
-        return JSON.parse(priceData)
+        return priceData
     }
 }
