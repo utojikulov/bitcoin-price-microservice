@@ -10,10 +10,10 @@ async function bootstrap() {
     const port = configService.get<number>('app.port', 3000)
 
     const config = new DocumentBuilder()
-    .setTitle('Bitcoin API')
-    .setDescription('Bitcoin Microservice API Description')
+    .setTitle('Crypto Price API')
+    .setDescription('Crypto Price Microservice API description.')
     .setVersion('1.0')
-    .addTag('btc')
+    .addTag('Crypto')
     .build();
 
     const documentFactory = () => SwaggerModule.createDocument(app, config);
